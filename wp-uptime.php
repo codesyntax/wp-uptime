@@ -26,12 +26,12 @@ add_action('rest_api_init', function () {
         '/ok/',
         array(
             'methods' => 'GET',
-            'callback' => 'test_route_handler',
+            'callback' => 'wp_uptime_route_handler',
         )
     );
 });
 
-function test_route_handler($request)
+function wp_uptime_route_handler($request)
 {
     global $wpdb;
     $result = $wpdb->check_connection();
