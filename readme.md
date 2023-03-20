@@ -8,10 +8,10 @@ Just install the plugin and activate it.
 
 ## Test it
 
-Open the /ok path of your website and check that it returns OK.
+Open the /wp-json/wp-uptime/ok path of your website and check that it returns OK.
 
 ```
-https://your-site.com/ok
+https://your-site.com/wp-json/wp-uptime/ok
 ```
 
 ## How it works

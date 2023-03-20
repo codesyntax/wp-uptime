@@ -19,33 +19,23 @@
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  */
 
-function add_wp_uptime_page() {
-    // Create post object
-    $wp_uptime_post = array(
-      'post_title'    => wp_strip_all_tags( 'WP Uptime' ),
-      'post_name'     => 'ok',
-      'post_status'   => 'publish',
-      'post_author'   => 1,
-      'post_type'     => 'page',
+
+add_action('rest_api_init', function () {
+    register_rest_route(
+        'wp-uptime',
+        '/ok/',
+        array(
+            'methods' => 'GET',
+            'callback' => 'test_route_handler',
+        )
     );
+});
 
-    // Insert the post into the database
-    wp_insert_post( $wp_uptime_post );
-}
-
-register_activation_hook(__FILE__, 'add_wp_uptime_page');
-
-add_filter( 'page_template', 'wp_uptime_page_template' );
-function wp_uptime_page_template( $page_template )
+function test_route_handler($request)
 {
-    if ( is_page( 'ok' ) ) {
-        $page_template = dirname( __FILE__ ) . '/template-uptime.php';
+    global $wpdb;
+    $result = $wpdb->check_connection();
+    if ($result) {
+        echo 'OK';
     }
-    return $page_template;
 }
-
-function remove_wp_uptime_page() {
-    $page = get_page_by_path( 'ok' );
-    wp_delete_post($page->ID, true);
-};
-register_deactivation_hook(__FILE__, 'remove_wp_uptime_page');
