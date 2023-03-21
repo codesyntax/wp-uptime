@@ -31,7 +31,7 @@ function get_option_or_value($key, $default_value)
 add_action('rest_api_init', function () {
     register_rest_route(
         'wp-uptime',
-        '/' . get_option_or_value("endpoint_path", 'ok') . '/',
+        '/' . get_option_or_value("wp_uptime_endpoint_path", 'ok') . '/',
         array(
             'methods' => 'GET',
             'callback' => 'wp_uptime_route_handler',
@@ -47,7 +47,7 @@ function wp_uptime_route_handler($request)
 
 
     if ($result) {
-        echo get_option_or_value("response_value", 'OK');
+        echo get_option_or_value("wp_uptime_response_value", 'OK');
     }
 }
 
@@ -59,7 +59,7 @@ function wp_uptime_menu()
 
 function wp_uptime_settings_page()
 {
-    $url = get_rest_url(null, 'wp-uptime/' . get_option_or_value("endpoint_path", 'ok') . '/');
+    $url = get_rest_url(null, 'wp-uptime/' . get_option_or_value("wp_uptime_endpoint_path", 'ok') . '/');
 
 
     ?>
@@ -75,13 +75,14 @@ function wp_uptime_settings_page()
             <table class="form-table">
                 <tr valign="top">
                     <th scope="row">Endpoint path</th>
-                    <td><input type="text" name="endpoint_path"
-                            value="<?php echo esc_attr(get_option_or_value('endpoint_path', 'ok')); ?>"></td>
+                    <td><input type="text" name="wp_uptime_endpoint_path"
+                            value="<?php echo esc_attr(get_option_or_value('wp_uptime_endpoint_path', 'ok')); ?>"></td>
                 </tr>
                 <tr valign="top">
                     <th scope="row">OK response value</th>
-                    <td><input type="text" name="response_value"
-                            value="<?php echo esc_attr(get_option_or_value('response_value', 'OK')); ?>"></td>
+                    <td>
+                        <?php echo "<textarea name='wp_uptime_response_value'>" . esc_attr(get_option_or_value('wp_uptime_response_value', 'OK')) . '</textarea>'; ?>
+                    </td>
                 </tr>
             </table>
             <?php submit_button(); ?>
@@ -94,6 +95,6 @@ add_action('admin_init', 'wp_uptime_settings');
 
 function wp_uptime_settings()
 {
-    register_setting('wp_uptime_settings', 'endpoint_path');
-    register_setting('wp_uptime_settings', 'response_value');
+    register_setting('wp_uptime_settings', 'wp_uptime_endpoint_path');
+    register_setting('wp_uptime_settings', 'wp_uptime_response_value');
 }
