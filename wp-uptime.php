@@ -98,3 +98,10 @@ function wp_uptime_settings()
     register_setting('wp_uptime_settings', 'wp_uptime_endpoint_path');
     register_setting('wp_uptime_settings', 'wp_uptime_response_value');
 }
+
+register_uninstall_hook(__FILE__, 'wp_uptime_uninstall');
+function wp_uptime_uninstall()
+{
+    delete_option('wp_uptime_endpoint_path');
+    delete_option('wp_uptime_response_value');
+}
