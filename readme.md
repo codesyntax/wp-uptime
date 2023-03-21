@@ -1,23 +1,15 @@
 # WP uptime
 
-Non-cached monitorization path for Wordpress.
+Editable non-cached monitorization path for Wordpress.
 
 ## How to use
 
 Just install the plugin and activate it.
 
-## Test it
+## Default settings
 
-Open the /wp-json/wp-uptime/ok path of your website and check that it returns OK.
+By default, the API is at this address and if mysql is running it will return OK.
 
 ```
 https://your-site.com/wp-json/wp-uptime/ok
 ```
-
-## How it works
-
-When you activate the plugin, the WP Uptime page will be created with the slug 'ok'.
-
-This page has a custom template that will render OK if the connection to the database is correct.
-
-If you deactivate the plugin, the /ok page will be removed.
