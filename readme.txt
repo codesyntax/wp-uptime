@@ -51,6 +51,9 @@ Response: {"status":"ok"}
 
 == Changelog ==
 
+= 2.0.5 =
+* Plugin display name changed from WPUptime to WP Uptime.
+
 = 2.0.4 =
 * First stable version.
 
