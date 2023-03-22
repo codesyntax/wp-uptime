@@ -1,4 +1,4 @@
-# WP uptime
+# WP Uptime
 
 Editable non-cached monitorization path for Wordpress.
 
