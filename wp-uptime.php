@@ -2,7 +2,7 @@
 /**
  * WP Uptime
  *
- * @package     WPUptime
+ * @package     WP Uptime
  * @author      CodeSYntax
  * @copyright   2023 CodeSyntax
  * @license     GPL-2.0-or-later
@@ -11,7 +11,7 @@
  * Plugin Name: WPUptime
  * Plugin URI:  https://github.com/codesyntax/wp-uptime
  * Description: Editable non-cached monitorization path for Wordpress.
- * Version:     2.0.0
+ * Version:     2.0.3
  * Author:      CodeSyntax
  * Author URI:  https://codesyntax.com
  * Text Domain: wp-uptime
