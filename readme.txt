@@ -3,8 +3,8 @@ Contributors: codesyntax, bipoza
 Donate link: https://codesyntax.com/
 Tags: monitorization, status, wp-json, restapi
 Requires at least: 4.7
-Tested up to: 6.1
-Stable tag: 2.0.3
+Tested up to: 6.2
+Stable tag: 3.0.0
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -25,7 +25,7 @@ Just install the plugin and activate it.
 By default, the API is at this address and if mysql is running it will return OK.
 
 ```
-https://your-site.com/wp-json/wp-uptime/ok
+https://your-site.com/ok/
 ```
 
 ## Edition panel
@@ -50,6 +50,9 @@ Response: {"status":"ok"}
 1. Edition panel
 
 == Changelog ==
+
+= 3.0.0 =
+* Improvement in the route and disable caching.
 
 = 2.0.5 =
 * Plugin display name changed from WPUptime to WP Uptime.
