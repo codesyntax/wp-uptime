@@ -28,38 +28,30 @@ function get_option_or_value($key, $default_value)
     return $response;
 }
 
-add_action('rest_api_init', function () {
-    register_rest_route(
-        'wp-uptime',
-        '/' . get_option_or_value("wp_uptime_endpoint_path", 'ok') . '/',
-        array(
-            'methods' => 'GET',
-            'callback' => 'wp_uptime_route_handler',
-        )
-    );
-});
 
 
-function wp_uptime_route_handler($request)
+add_action('init', 'wpUptimeFeed');
+function wpUptimeFeed()
 {
-    global $wpdb;
-    $result = $wpdb->check_connection();
+    add_feed(get_option_or_value("wp_uptime_endpoint_path", 'ok'), 'wpUptimeResponse');
+    global $wp_rewrite;
+    $wp_rewrite->flush_rules();
+}
 
-
-    if ($result) {
-        echo get_option_or_value("wp_uptime_response_value", 'OK');
-    }
+function wpUptimeResponse()
+{
+    include('check-connection.php');
 }
 
 add_action('admin_menu', 'wp_uptime_menu');
 function wp_uptime_menu()
 {
-    add_menu_page('WP Uptime Settings', 'WP Uptime', 'manage_options', 'wp-uptime-settings', 'wp_uptime_settings_page');
+    add_options_page('WP Uptime Settings', 'WP Uptime', 'manage_options', 'wp-uptime-settings', 'wp_uptime_settings_page');
 }
 
 function wp_uptime_settings_page()
 {
-    $url = get_rest_url(null, 'wp-uptime/' . get_option_or_value("wp_uptime_endpoint_path", 'ok') . '/');
+    $url = get_site_url(null, get_option_or_value("wp_uptime_endpoint_path", 'ok') . '/');
 
 
     ?>
