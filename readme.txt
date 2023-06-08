@@ -4,7 +4,7 @@ Donate link: https://codesyntax.com/
 Tags: monitorization, status, wp-json, restapi
 Requires at least: 4.7
 Tested up to: 6.2
-Stable tag: 3.0.0
+Stable tag: 3.0.1
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -50,6 +50,9 @@ Response: {"status":"ok"}
 1. Edition panel
 
 == Changelog ==
+
+= 3.0.1 =
+* Semantic versioning.
 
 = 3.0.0 =
 * Improvement in the route and disable caching.
