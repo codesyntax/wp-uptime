@@ -4,8 +4,8 @@ Donate link: https://codesyntax.com/
 Tags: monitorization, status, wp-json, restapi
 Requires at least: 4.7
 Tested up to: 6.2
-Stable tag: 3.0.1
-Requires PHP: 7.0
+Stable tag: 3.0.2
+Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,7 +14,7 @@ Editable non-cached monitorization path for Wordpress.
 == Description ==
 
 ## WP Uptime
-Editable non-cached monitorization path for Wordpress.
+Editable non-cached monitorization path for Wordpress. Optimized for performance and security.
 
 ## How to use
 
@@ -50,6 +50,12 @@ Response: {"status":"ok"}
 1. Edition panel
 
 == Changelog ==
+
+= 3.0.2 =
+* Performance optimization: removed constant flush_rewrite_rules from every request.
+* Security improvements: added escaping and sanitization.
+* Better error handling: returns 503 status code on database failure.
+* PHP 8.x compatibility and general code cleanup.
 
 = 3.0.1 =
 * Semantic versioning.

@@ -3,7 +3,7 @@
  * WP Uptime
  *
  * @package     WP Uptime
- * @author      CodeSYntax
+ * @author      CodeSyntax
  * @copyright   2023 CodeSyntax
  * @license     GPL-2.0-or-later
  *
@@ -11,7 +11,7 @@
  * Plugin Name: WP Uptime
  * Plugin URI:  https://github.com/codesyntax/wp-uptime
  * Description: Editable non-cached monitorization path for Wordpress.
- * Version:     3.0.1
+ * Version:     3.0.3
  * Author:      CodeSyntax
  * Author URI:  https://codesyntax.com
  * Text Domain: wp-uptime
@@ -19,61 +19,98 @@
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  */
 
-function get_option_or_value($key, $default_value)
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+/**
+ * Handle the request directly.
+ * By using 'init' at priority 0, we bypass redirects and feed processing.
+ */
+add_action('init', 'wpuptime_handle_request', 0);
+function wpuptime_handle_request()
 {
-    $response = get_option($key);
-    if (!$response) {
-        $response = $default_value;
+    $endpoint = get_option('wp_uptime_endpoint_path', 'ok');
+    if (empty($endpoint)) {
+        $endpoint = 'ok';
     }
-    return $response;
+
+    // Get the requested path
+    $request_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+    $request_path = trim($request_uri, '/');
+
+    /**
+     * Check if the path matches our endpoint.
+     * We check for:
+     * 1. Exact match (e.g., trans.eus/ok)
+     * 2. Language-prefixed match (e.g., trans.eus/es/ok, trans.eus/eu/ok)
+     */
+    $is_match = false;
+    if ($request_path === $endpoint) {
+        $is_match = true;
+    } elseif (preg_match('/^[a-z]{2}\/' . preg_quote($endpoint, '/') . '$/', $request_path)) {
+        $is_match = true;
+    }
+
+    if ($is_match) {
+        include plugin_dir_path(__FILE__) . 'check-connection.php';
+        exit;
+    }
 }
 
-
-
-add_action('init', 'wpUptimeFeed');
-function wpUptimeFeed()
+/**
+ * Add admin menu.
+ */
+add_action('admin_menu', 'wpuptime_admin_menu');
+function wpuptime_admin_menu()
 {
-    add_feed(get_option_or_value("wp_uptime_endpoint_path", 'ok'), 'wpUptimeResponse');
-    global $wp_rewrite;
-    $wp_rewrite->flush_rules();
+    add_options_page(
+        __('WP Uptime Settings', 'wp-uptime'),
+        __('WP Uptime', 'wp-uptime'),
+        'manage_options',
+        'wp-uptime-settings',
+        'wpuptime_settings_page'
+    );
 }
 
-function wpUptimeResponse()
+/**
+ * Settings page content.
+ */
+function wpuptime_settings_page()
 {
-    include('check-connection.php');
-}
+    if (!current_user_can('manage_options')) {
+        return;
+    }
 
-add_action('admin_menu', 'wp_uptime_menu');
-function wp_uptime_menu()
-{
-    add_options_page('WP Uptime Settings', 'WP Uptime', 'manage_options', 'wp-uptime-settings', 'wp_uptime_settings_page');
-}
-
-function wp_uptime_settings_page()
-{
-    $url = get_site_url(null, get_option_or_value("wp_uptime_endpoint_path", 'ok') . '/');
-
-
+    $endpoint = get_option('wp_uptime_endpoint_path', 'ok');
+    $url = get_site_url(null, $endpoint);
     ?>
     <div class="wrap">
-        <h1>WP Uptime Settings</h1>
+        <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
         <h3>
-            Editable non-cached monitorization path for Wordpress
+            <?php esc_html_e('Editable non-cached monitorization path for Wordpress', 'wp-uptime'); ?>
         </h3>
-        <p>Monitorization path: <a href="<?php echo $url ?>" target="_blank"><?php echo $url ?></a></p>
+        <p>
+            <?php esc_html_e('Monitorization path:', 'wp-uptime'); ?> 
+            <a href="<?php echo esc_url($url); ?>" target="_blank"><?php echo esc_url($url); ?></a>
+        </p>
         <form method="post" action="options.php">
-            <?php settings_fields('wp_uptime_settings'); ?>
-            <?php do_settings_sections('wp-uptime-settings'); ?>
+            <?php
+            settings_fields('wp_uptime_settings_group');
+            do_settings_sections('wp-uptime-settings');
+            ?>
             <table class="form-table">
                 <tr valign="top">
-                    <th scope="row">Endpoint path</th>
-                    <td><input type="text" name="wp_uptime_endpoint_path"
-                            value="<?php echo esc_attr(get_option_or_value('wp_uptime_endpoint_path', 'ok')); ?>"></td>
+                    <th scope="row"><?php esc_html_e('Endpoint path', 'wp-uptime'); ?></th>
+                    <td>
+                        <input type="text" name="wp_uptime_endpoint_path" value="<?php echo esc_attr($endpoint); ?>" class="regular-text">
+                        <p class="description"><?php esc_html_e('The slug for your uptime check (e.g., "ok" or "status").', 'wp-uptime'); ?></p>
+                    </td>
                 </tr>
                 <tr valign="top">
-                    <th scope="row">OK response value</th>
+                    <th scope="row"><?php esc_html_e('OK response value', 'wp-uptime'); ?></th>
                     <td>
-                        <?php echo "<textarea name='wp_uptime_response_value'>" . esc_attr(get_option_or_value('wp_uptime_response_value', 'OK')) . '</textarea>'; ?>
+                        <textarea name="wp_uptime_response_value" rows="5" cols="50" class="large-text"><?php echo esc_textarea(get_option('wp_uptime_response_value', 'OK')); ?></textarea>
                     </td>
                 </tr>
             </table>
@@ -83,16 +120,40 @@ function wp_uptime_settings_page()
     <?php
 }
 
-add_action('admin_init', 'wp_uptime_settings');
-
-function wp_uptime_settings()
+/**
+ * Register settings.
+ */
+add_action('admin_init', 'wpuptime_register_settings');
+function wpuptime_register_settings()
 {
-    register_setting('wp_uptime_settings', 'wp_uptime_endpoint_path');
-    register_setting('wp_uptime_settings', 'wp_uptime_response_value');
+    register_setting('wp_uptime_settings_group', 'wp_uptime_endpoint_path', array(
+        'sanitize_callback' => 'sanitize_title'
+    ));
+    register_setting('wp_uptime_settings_group', 'wp_uptime_response_value');
 }
 
-register_uninstall_hook(__FILE__, 'wp_uptime_uninstall');
-function wp_uptime_uninstall()
+/**
+ * Load text domain.
+ */
+add_action('init', 'wpuptime_load_textdomain');
+function wpuptime_load_textdomain()
+{
+    load_plugin_textdomain('wp-uptime', false, dirname(plugin_basename(__FILE__)) . '/languages');
+}
+
+/**
+ * Activation hook: No longer needs to flush rules.
+ */
+register_activation_hook(__FILE__, 'wpuptime_activate');
+function wpuptime_activate() {
+    // Keep for potential legacy cleanups, but no logic needed for direct intercept
+}
+
+/**
+ * Uninstall hook.
+ */
+register_uninstall_hook(__FILE__, 'wpuptime_uninstall');
+function wpuptime_uninstall()
 {
     delete_option('wp_uptime_endpoint_path');
     delete_option('wp_uptime_response_value');

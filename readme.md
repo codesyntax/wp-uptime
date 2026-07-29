@@ -1,6 +1,14 @@
 # WP Uptime
 
-Editable non-cached monitorization path for Wordpress.
+Editable non-cached monitorization path for Wordpress. Optimized for performance and security.
+
+## Features
+
+- **Performance**: No more constant rewrite rules flushing.
+- **Security**: Proper escaping and sanitization of settings.
+- **Reliability**: Returns 503 status code if the database connection fails.
+- **Flexibility**: Editable endpoint path and response content.
+- **Compatibility**: Supports PHP 5.6 to 8.x and WordPress 4.7+.
 
 ## How to use
 
