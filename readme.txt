@@ -4,7 +4,7 @@ Donate link: https://codesyntax.com/
 Tags: monitorization, status, wp-json, restapi
 Requires at least: 4.7
 Tested up to: 6.2
-Stable tag: 3.0.2
+Stable tag: 4.0.0
 Requires PHP: 5.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -50,6 +50,11 @@ Response: {"status":"ok"}
 1. Edition panel
 
 == Changelog ==
+
+= 4.0.0 =
+* Security hardening: added strict type checking and improved sanitization for options.
+* Prevention of PHP Object Injection via settings.
+* Improved output escaping for better XSS protection.
 
 = 3.0.2 =
 * Performance optimization: removed constant flush_rewrite_rules from every request.
