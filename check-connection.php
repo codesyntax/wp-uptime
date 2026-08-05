@@ -42,7 +42,7 @@ header('Pragma: no-cache');
 header('Expires: 0');
 
 if ($is_healthy) {
-    echo get_option('wp_uptime_response_value', 'OK');
+    echo wp_kses_post(get_option('wp_uptime_response_value', 'OK'));
 } else {
     // Return 503 Service Unavailable if any check fails
     header('HTTP/1.1 503 Service Unavailable');

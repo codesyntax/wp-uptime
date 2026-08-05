@@ -127,9 +127,15 @@ add_action('admin_init', 'wpuptime_register_settings');
 function wpuptime_register_settings()
 {
     register_setting('wp_uptime_settings_group', 'wp_uptime_endpoint_path', array(
-        'sanitize_callback' => 'sanitize_title'
+        'type'              => 'string',
+        'sanitize_callback' => 'sanitize_title',
+        'show_in_rest'      => false,
     ));
-    register_setting('wp_uptime_settings_group', 'wp_uptime_response_value');
+    register_setting('wp_uptime_settings_group', 'wp_uptime_response_value', array(
+        'type'              => 'string',
+        'sanitize_callback' => 'wp_kses_post',
+        'show_in_rest'      => false,
+    ));
 }
 
 /**
